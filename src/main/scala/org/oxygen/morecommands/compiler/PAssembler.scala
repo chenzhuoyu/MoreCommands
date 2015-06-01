@@ -279,10 +279,6 @@ object PAssembler
 		val injector = classOf[ClassLoader].getDeclaredMethod("defineClass",
 			classOf[String], classOf[Array[Byte]], classOf[Int], classOf[Int])
 
-		val f = new java.io.FileOutputStream(new java.io.File(name + ".class"))
-		f.write(code)
-		f.close()
-
 		injector.setAccessible(true)
 		injector.invoke(loader, name, code, 0: Integer, code.length: Integer).asInstanceOf[Class[_]]
 	}
