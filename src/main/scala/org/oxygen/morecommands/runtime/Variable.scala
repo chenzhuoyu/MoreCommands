@@ -176,20 +176,6 @@ class Variable extends Serializable
 			s"'${VariableType.typeToName(vtype)}' and '${VariableType.typeToName(v.vtype)}' with operator '**'")
 	}
 
-	def &&(v: Variable): Variable = (vtype, v.vtype) match
-	{
-		case (VariableType.Boolean, VariableType.Boolean) => new Variable(booleanValue && v.booleanValue)
-		case _ => throw new ArithmeticException("Undefined behavior between type " +
-			s"'${VariableType.typeToName(vtype)}' and '${VariableType.typeToName(v.vtype)}' with operator '&&'")
-	}
-
-	def ||(v: Variable): Variable = (vtype, v.vtype) match
-	{
-		case (VariableType.Boolean, VariableType.Boolean) => new Variable(booleanValue || v.booleanValue)
-		case _ => throw new ArithmeticException("Undefined behavior between type " +
-			s"'${VariableType.typeToName(vtype)}' and '${VariableType.typeToName(v.vtype)}' with operator '||'")
-	}
-
 	def <<(v: Variable): Variable = (vtype, v.vtype) match
 	{
 		case (VariableType.Int, VariableType.Int) => new Variable(intValue << v.intValue)
@@ -280,6 +266,17 @@ class Variable extends Serializable
 
 		case _ => throw new ArithmeticException("Undefined behavior between type " +
 			s"'${VariableType.typeToName(vtype)}' and '${VariableType.typeToName(v.vtype)}' with operator '<='")
+	}
+
+	def isTrue: Boolean = vtype match
+	{
+		case VariableType.Int		=> intValue != 0
+		case VariableType.Float		=> floatValue != 0.0
+		case VariableType.String	=> !stringValue.isEmpty
+		case VariableType.Boolean	=> booleanValue
+
+		case VariableType.Map		=> !mapValue.isEmpty
+		case VariableType.Array		=> !arrayValue.isEmpty
 	}
 
 	override def equals(o: Any): Boolean = o match

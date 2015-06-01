@@ -1,6 +1,6 @@
 package org.oxygen.morecommands.compiler
 
-import org.objectweb.asm.{ClassWriter, MethodVisitor, Opcodes}
+import org.objectweb.asm.{Label, ClassWriter, MethodVisitor, Opcodes}
 
 import scala.collection.immutable
 import scala.language.postfixOps
@@ -44,8 +44,6 @@ object PAssembler
 		"|"		-> "$bar",
 		"^"		-> "$up",
 		"**"	-> "$times$times",
-		"&&"	-> "$amp$amp",
-		"||"	-> "$bar$bar",
 		"<<"	-> "$less$less",
 		">>"	-> "$greater$greater",
 		">>>"	-> "$greater$greater$greater",
@@ -100,13 +98,29 @@ object PAssembler
 		def unary_! : Expr		= new Expr(null, "$!", this)
 		def unary_- : Expr		= new Expr(null, "$-", this)
 
-		def assemble(method: MethodVisitor): Unit =
+		def assemble(method: MethodVisitor): Unit = op match
 		{
-			if (!left.eq(null))
+			case "&&" | "||" =>
+				val label = new Label
 				left.assemble(method)
+				method.visitInsn(Opcodes.DUP)
+				method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Variable, "isTrue", "()Z", false)
+				method.visitJumpInsn(if (op == "&&") Opcodes.IFEQ else Opcodes.IFNE, label)
+				method.visitInsn(Opcodes.POP)
+				right.assemble(method)
+				method.visitLabel(label)
 
-			right.assemble(method)
-			applyOperator(method, op)
+			case _ => left.eq(null) match
+			{
+				case true	=>
+					right.assemble(method)
+					applyOperator(method, op)
+
+				case false	=>
+					left.assemble(method)
+					right.assemble(method)
+					applyOperator(method, op)
+			}
 		}
 
 		override def toString: String = s"{Expr $left $op $right}"
@@ -264,6 +278,10 @@ object PAssembler
 		val loader = getClass.getClassLoader
 		val injector = classOf[ClassLoader].getDeclaredMethod("defineClass",
 			classOf[String], classOf[Array[Byte]], classOf[Int], classOf[Int])
+
+		val f = new java.io.FileOutputStream(new java.io.File(name + ".class"))
+		f.write(code)
+		f.close()
 
 		injector.setAccessible(true)
 		injector.invoke(loader, name, code, 0: Integer, code.length: Integer).asInstanceOf[Class[_]]

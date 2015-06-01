@@ -248,6 +248,20 @@ object Storage
 			}
 		}
 
+		functions("copy") = (sender: ICommandSender, args: Array[Variable]) =>
+		{
+			if (args.length != 1)
+				throw new CommandException("commands.function.arguments.count.exact", "copy", 1: Integer)
+
+			args.head.vtype match
+			{
+				case VariableType.Map	=> new Variable(args.head.mapValue.clone())
+				case VariableType.Array	=> new Variable(args.head.arrayValue.clone())
+				case _					=>
+					throw new CommandException("commands.function.arguments.type.only", "copy", "map or array", 1: Integer)
+			}
+		}
+
 		functions("clear") = (sender: ICommandSender, args: Array[Variable]) =>
 		{
 			if (args.length != 1)

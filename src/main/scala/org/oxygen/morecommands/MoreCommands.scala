@@ -20,10 +20,13 @@ import org.oxygen.morecommands.runtime.{Storage, Variable, VariableType}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
+import scala.util.Random
 
 @Mod(modid = "MoreCommands", name = "More Commands", version = "0.1a", modLanguage = "scala")
 object MoreCommands
 {
+	private val random = new Random(System.currentTimeMillis())
+
 	private def saveVariables(): Unit =
 	{
 		println(s"Saving variables to world '${MinecraftServer.getServer.getFolderName}' ...")
@@ -100,6 +103,19 @@ object MoreCommands
 		Storage.registerTypeMethods()
 
 		println("Registering built-in functions ....")
+		Storage.functions("rand") = (sender: ICommandSender, args: Array[Variable]) =>
+		{
+			Storage.checkArgsExact("rand", args, VariableType.Int, VariableType.Int)
+
+			val lower: Long = args(0).intValue
+			val upper: Long = args(1).intValue
+
+			if (lower >= upper)
+				throw new CommandException("commands.function.arguments.value.range", "rand")
+
+			new Variable(Math.abs(random.nextLong()) % (upper - lower + 1) + lower)
+		}
+
 		Storage.functions("exec") = (sender: ICommandSender, args: Array[Variable]) =>
 		{
 			Storage.checkArgsExact("exec", args, VariableType.String)
@@ -120,7 +136,7 @@ object MoreCommands
 			val command: String = args(1).stringValue
 			val manager: ICommandManager = MinecraftServer.getServer.getCommandManager
 
-			if (args.head.booleanValue && manager.executeCommand(sender, command) < 1)
+			if (args.head.isTrue && manager.executeCommand(sender, command) < 1)
 				throw new CommandException("commands.execute.allInvocationsFailed", command)
 
 			args.head
@@ -177,7 +193,7 @@ object MoreCommands
 			saveVariables()
 	}
 
-	private def readObjectFromStream[A](stream: ObjectInputStream)(implicit m:scala.reflect.Manifest[A]): A =
+	private def readObjectFromStream[A](stream: ObjectInputStream)(implicit m: scala.reflect.Manifest[A]): A =
 	{
 		stream.readObject() match
 		{

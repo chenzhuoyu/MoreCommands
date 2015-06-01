@@ -30,7 +30,9 @@ commands.namespace.confirm.clear=Cleared namespace "%s"
 commands.map.key=Key not found: %s
 commands.array.index=Array index out of bound: %d
 
-commands.function.arguments.type.only=Functions "%s" accepts "%s" as it's %d-th argument only
+commands.function.arguments.type.only=Function "%s" accepts "%s" as it's %d-th argument only
+commands.function.arguments.value.range=Function "%s" argument out of range
+
 commands.function.arguments.count.no=Function "%s" takes no arguments
 commands.function.arguments.count.most=Function "%s" takes at most %d arguments
 commands.function.arguments.count.least=Function "%s" takes at least %d arguments
