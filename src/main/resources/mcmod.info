@@ -1,0 +1,14 @@
+[{
+    "modid": "MoreCommands",
+    "name": "More Commands",
+    "description": "More Commands for Minecraft Command Block",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Oxygen"],
+    "credits": "Copyright (R) Oxygen",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+}]

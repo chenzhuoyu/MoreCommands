@@ -1,0 +1,37 @@
+command.if.usage=/if <condition> <command>
+
+commands.var.init=Variables of %s type doesn't have initial values
+commands.var.usage=/var <def|del|dump> <namespace> <name> [float|string|integer|boolean] [value]
+commands.var.number=Invalid number format "%s"
+commands.var.boolean=Invalid boolean literal "%s"
+commands.var.variable=Variable "%s" does not exist
+commands.var.namespace=Namespace "%s" does not exist
+commands.var.confirm.del=Removed variable "%s"
+commands.var.confirm.def=Defined variable "%s" as %s
+commands.var.confirm.dump=Variable "%s" has value %s
+
+commands.eval.type=Type mismatch: "%s" and "%s"
+commands.eval.usage=/eval <expression>
+commands.eval.result=Expression returned value: %s
+commands.eval.runtime=Invalid expression: %s
+commands.eval.function=Function "%s" does not exist
+commands.eval.variable=Variable "%s" does not exist
+commands.eval.arithmatic=Arithmatic error %s
+commands.eval.namespace=Namespace "%s" does not exist
+commands.eval.invalid_ident=Identifier "%s" is invalid
+
+commands.namespace.usage=/namespace <new|del|clear> [name]
+commands.namespace.exists=Namespace "%s" already exists
+commands.namespace.notfound=Namespace "%s" does not exist
+commands.namespace.confirm.del=Removed namespace "%s"
+commands.namespace.confirm.new=Created namespace "%s"
+commands.namespace.confirm.clear=Cleared namespace "%s"
+
+commands.map.key=Key not found: %s
+commands.array.index=Array index out of bound: %d
+
+commands.function.arguments.type.only=Functions "%s" accepts "%s" as it's %d-th argument only
+commands.function.arguments.count.no=Function "%s" takes no arguments
+commands.function.arguments.count.most=Function "%s" takes at most %d arguments
+commands.function.arguments.count.least=Function "%s" takes at least %d arguments
+commands.function.arguments.count.exact=Function "%s" takes exact %d arguments
