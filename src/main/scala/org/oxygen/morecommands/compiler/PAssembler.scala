@@ -114,12 +114,12 @@ object PAssembler
 			{
 				case true	=>
 					right.assemble(method)
-					applyOperator(method, op)
+					applyUnary(method, op)
 
 				case false	=>
 					left.assemble(method)
 					right.assemble(method)
-					applyOperator(method, op)
+					applyBinary(method, op)
 			}
 		}
 
@@ -252,14 +252,16 @@ object PAssembler
 		}
 	}
 
-	def applyOperator(method: MethodVisitor, operator: String): Unit = UNARIES.get(operator) match
+	def applyUnary(method: MethodVisitor, operator: String): Unit = UNARIES.get(operator) match
 	{
+		case None		=> throw new RuntimeException(s"Invalid unary operator '$operator'")
 		case Some(func)	=> method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Variable, func, s"()L$Variable;", false)
-		case None		=> BINARIES.get(operator) match
-		{
-			case None		=> throw new RuntimeException(s"Invalid operator '$operator'")
-			case Some(func)	=> method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Variable, func, s"(L$Variable;)L$Variable;", false)
-		}
+	}
+
+	def applyBinary(method: MethodVisitor, operator: String): Unit = BINARIES.get(operator) match
+	{
+		case None		=> throw new RuntimeException(s"Invalid binary operator '$operator'")
+		case Some(func)	=> method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Variable, func, s"(L$Variable;)L$Variable;", false)
 	}
 
 	def assembleClass(name: String, assemble: => (MethodVisitor) => Unit): Class[_] =

@@ -48,6 +48,7 @@ class CommandVar extends CommandBase
 					case "array"	=> storage(name) = new Variable(new mutable.ArrayBuffer[Variable])
 					case _			=> throw new WrongUsageException("commands.var.usage")
 				}
+
 				CommandBase.notifyOperators(sender, this, "commands.var.confirm.def", s"$namespace.$name", args(3))
 
 				case 5 => try
